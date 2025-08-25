@@ -19,3 +19,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             is_active=False  # inactive until email verification
         )
         return user
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "username", "email", "is_active", "date_joined"]
