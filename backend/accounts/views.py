@@ -12,6 +12,13 @@ from django.contrib.auth import authenticate, get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
 from .serializers import UserRegisterSerializer, UserSerializer
+from django.shortcuts import redirect
+from accounts.models import User
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import CustomTokenObtainPairSerializer
+
+
+
 
 
 class RegisterView(APIView):
@@ -25,7 +32,10 @@ class RegisterView(APIView):
             uid = urlsafe_base64_encode(force_bytes(user.pk))
 
             # Build verification URL (one correct way)
-            verification_link = request.build_absolute_uri(reverse("accounts:verify-email", kwargs={"uidb64": uid, "token": token}))
+
+            FRONTEND_URL = getattr(settings, "FRONTEND_URL", "http://localhost:5173")
+            verification_link = f"{FRONTEND_URL}/verify/{uid}/{token}"
+                        
 
 
             # Send email
@@ -56,9 +66,12 @@ class VerifyEmailView(APIView):
         if user is not None and default_token_generator.check_token(user, token):
             user.is_active = True
             user.save()
-            return Response({"message": "Email verified successfully! ✅"})
+            # 👇 Redirect to frontend success page
+            return redirect(f"{settings.FRONTEND_URL}/verify-success")
         else:
-            return Response({"error": "Invalid or expired verification link."}, status=400)
+            # 👇 Redirect to frontend error page
+            return redirect(f"{settings.FRONTEND_URL}/verify-error")
+        
 
 
 
@@ -115,3 +128,7 @@ class LogoutView(APIView):
             return Response({"detail": "Successfully logged out."}, status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response({"detail": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer

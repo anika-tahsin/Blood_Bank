@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret-change-me")
 DEBUG = True
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
-
+FRONTEND_URL = "http://localhost:5173" 
 
 # Initialise environment variables
 env = environ.Env()

@@ -1,8 +1,12 @@
 import { Navigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../context/AuthContext";
 
 export default function ProtectedRoute({ children }) {
   const { user } = useAuth();
+
+  if (user === undefined) {
+    return <p className="text-center mt-10">Checking authentication...</p>;
+  }
 
   if (!user) {
     return <Navigate to="/login" replace />;

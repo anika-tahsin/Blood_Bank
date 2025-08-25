@@ -1,52 +1,41 @@
-import { createContext, useState, useEffect } from "react";
 
-export const AuthContext = createContext();
 
-export default function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [authTokens, setAuthTokens] = useState(() =>
-    localStorage.getItem("authTokens")
-      ? JSON.parse(localStorage.getItem("authTokens"))
-      : null
-  );
+import { createContext, useContext, useState, useEffect } from "react";
 
-  // 🔹 Login function
-  const loginUser = async (username, password) => {
-    const response = await fetch("http://127.0.0.1:8000/api/accounts/login/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
+const AuthContext = createContext();
 
-    if (response.ok) {
-      const data = await response.json();
-      setAuthTokens(data);
-      setUser({ username }); // basic info, you can decode JWT for more
-      localStorage.setItem("authTokens", JSON.stringify(data));
-      return true;
-    } else {
-      return false;
-    }
-  };
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null); // ⬅️ start with null
+  const [loading, setLoading] = useState(true);
 
-  // 🔹 Logout function
-  const logoutUser = () => {
-    setAuthTokens(null);
-    setUser(null);
-    localStorage.removeItem("authTokens");
-  };
-
-  // 🔹 Auto login (if tokens exist)
+  // Load saved user (if token exists)
   useEffect(() => {
-    if (authTokens) {
-      setUser({ username: "current_user" }); // (optional: decode token for real user)
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
-  }, [authTokens]);
+    setLoading(false);
+  }, []);
+
+  const login = (userData, token) => {
+    setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", token);
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+  };
 
   return (
-    <AuthContext.Provider value={{ user, authTokens, loginUser, logoutUser }}>
-      {children}
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
+      {!loading && children}
     </AuthContext.Provider>
   );
 }
-            
+
+export default function useAuth() {
+  return useContext(AuthContext);
+}
