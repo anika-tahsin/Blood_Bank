@@ -1,7 +1,6 @@
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
-from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework.views import APIView
@@ -17,7 +16,7 @@ from accounts.models import User
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer
 
-
+User = get_user_model()
 
 
 
@@ -54,7 +53,6 @@ class RegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class VerifyEmailView(APIView):
     def get(self, request, uidb64, token):
         try:
@@ -73,40 +71,25 @@ class VerifyEmailView(APIView):
             return redirect(f"{settings.FRONTEND_URL}/verify-error")
         
 
+# class LoginView(generics.GenericAPIView):
+#     def post(self, request, *args, **kwargs):
+#         username_or_email = request.data.get("username")
+#         password = request.data.get("password")
 
+#         # First try with username
+#         user = authenticate(username=username_or_email, password=password)
 
+#         if user is not None and user.is_active:
+#             refresh = RefreshToken.for_user(user)
+#             return Response({
+#                 "refresh": str(refresh),
+#                 "access": str(refresh.access_token),
+#             }, status=status.HTTP_200_OK)
 
-User = get_user_model()
-
-class LoginView(generics.GenericAPIView):
-    def post(self, request, *args, **kwargs):
-        username_or_email = request.data.get("username")
-        password = request.data.get("password")
-
-        # First try with username
-        user = authenticate(username=username_or_email, password=password)
-
-        # If not found, try with email
-        if user is None:
-            try:
-                user_obj = User.objects.get(email=username_or_email)
-                user = authenticate(username=user_obj.username, password=password)
-            except User.DoesNotExist:
-                pass
-
-        if user is not None and user.is_active:
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
-            }, status=status.HTTP_200_OK)
-
-        return Response(
-            {"detail": "Invalid credentials."},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-
-
+#         return Response(
+#             {"detail": "Invalid User or password."},
+#             status=status.HTTP_400_BAD_REQUEST
+#         )
 
 
 class CurrentUserView(APIView):

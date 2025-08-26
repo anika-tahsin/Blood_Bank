@@ -117,6 +117,12 @@ REST_FRAMEWORK = {
 # --- Custom User Model ---
 AUTH_USER_MODEL = "accounts.User"
 
+AUTHENTICATION_BACKENDS = [
+    "accounts.backends.EmailOrUsernameModelBackend",  # custom backend
+    "django.contrib.auth.backends.ModelBackend",      # default
+]
+
+
 
 from datetime import timedelta
 SIMPLE_JWT = {

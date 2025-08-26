@@ -1,6 +1,9 @@
+import axios from "axios";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import useAuth from "../context/AuthContext";
+
+
 
 export default function Login() {
   const navigate = useNavigate();
@@ -16,28 +19,25 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
     setLoading(true);
+    setError("");
+    
+    const { email, password } = form;
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/accounts/login/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+      const response = await axios.post("http://127.0.0.1:8000/api/accounts/token/", {
+        email: form.email,
+        password: form.password
       });
 
-      const data = await res.json();
+      const { user, access, refresh } = response.data;
 
-      if (!res.ok) throw new Error(data?.detail || "Login failed");
-
-      // ✅ update context
-      login(data.user, data.access);
-
-      // ✅ redirect
+      // update context
+      login(user, { access, refresh });
       navigate("/dashboard");
 
     } catch (err) {
-      setError(err.message);
+      setError("Invalid Email or Password");
     } finally {
       setLoading(false);
     }

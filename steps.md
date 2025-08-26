@@ -1,10 +1,8 @@
-Backend:
+# Backend: Django
 
 pip install pipenv
 pipenv shell
 
-pipenv install django djangorestframework djangorestframework-simplejwt django-cors-headers
-OR
 pip install django djangorestframework djangorestframework-simplejwt
 pip install django-cors-headers
 
@@ -12,23 +10,17 @@ django-admin startproject backend
 cd backend
 python manage.py startapp accounts
 
+# Frontend: React
 
-Frontend:
-get out of pipenv shell
-npm create vite@latest frontend
-cd frontend
+get out of pipenv shell 
+npm create vite@latest frontend cd frontend
 
 npm install
 npm install framer-motion @radix-ui/react-icons
-//npm install -D tailwindcss postcss autoprefixer
-npm install tailwindcss @tailwindcss/postcss autoprefixer
-
-index.css:
-@import "tailwindcss";
+npm install tailwindcss 
 
 npm install @vitejs/plugin-react --save-dev
 npm install react react-dom
-npm install -D vite @vitejs/plugin-react tailwindcss postcss autoprefixer
 
 if issue occurs
 cd ..
@@ -38,26 +30,30 @@ rm -rf node_modules package-lock.json
 
 npm init vite@latest . -- --template react
 npm install
-npm install -D tailwindcss postcss autoprefixer @vitejs/plugin-react
 npm install -D @tailwindcss/vite
 
 npm run dev
+
+npm run dev
+
+npm install react-router-dom
+npm install lucide-react
 
 npm cache clean --force
 
 full script for clean up and restart:
 
-# 1. Clean up old files
-rm -rf node_modules package-lock.json vite.config.js
+### Re-initialize Vite React project in current folder
 
-# 2. Re-initialize Vite React project in current folder
 npm init vite@latest . -- --template react
 
-# 3. Install dependencies
-npm install
-npm install -D tailwindcss postcss autoprefixer @vitejs/plugin-react
+### Install dependencies
 
-# 4. Overwrite vite.config.js with proper config
+npm install
+npm install -D tailwindcss 
+
+### Overwrite vite.config.js with proper config
+
 echo "import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
@@ -65,14 +61,10 @@ export default defineConfig({
   plugins: [react()],
 })" > vite.config.js
 
-# 5. Overwrite src/index.css with Tailwind v4 imports
-echo "@import \"tailwindcss\";
+# 
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;" > src/index.css
+# Quick test App.jsx
 
-# 6. Quick test App.jsx
 echo "export default function App() {
   return (
     <div className='min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white'>
@@ -82,17 +74,23 @@ echo "export default function App() {
   )
 }" > src/App.jsx
 
-# 7. Start dev server
-npm run dev
+# 
 
+# Command Line:
+
+****To make directories: ****
+
+```
 mkdir components pages hooks layouts services utils
+```
 
+****Clean up old files: ****
 
-npm install react-router-dom
-npm install lucide-react
+```
+rm -rf node_modules package-lock.json vite.config.js
+```
 
+# Python Shell
 
-USER ACCOUNT:
-
-cd backend
-npm install express mongoose bcrypt jsonwebtoken nodemailer cors dotenv
+user = User.objects.get(email="[anika.ict.aibl@gmail.com](mailto:anika.ict.aibl@gmail.com)")
+user.check_password("123456")

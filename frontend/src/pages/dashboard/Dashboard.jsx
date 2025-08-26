@@ -1,4 +1,5 @@
 import useAuth from "../../context/AuthContext";
+import { useEffect } from "react";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -21,3 +22,4 @@ export default function Dashboard() {
     </div>
   );
 }
+
