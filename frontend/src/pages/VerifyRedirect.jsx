@@ -8,18 +8,25 @@ export default function VerifyRedirect() {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        const res = await fetch(`http://127.0.0.1:8000/api/accounts/verify/${uid}/${token}/`);
-        if (res.ok) {
+        const res = await fetch(`http://127.0.0.1:8000/api/accounts/verify-email/${uid}/${token}/`);
+        const data = await res.json();
+        
+        if (res.ok && data.success) {
           navigate("/verify-success");
         } else {
           navigate("/verify-error");
         }
       } catch (err) {
+        console.error("Verification error:", err);
         navigate("/verify-error");
       }
     };
     verifyEmail();
   }, [uid, token, navigate]);
 
-  return <p className="text-center mt-10">Verifying your email...</p>;
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-red-900 via-pink-800 to-black">
+      <p className="text-white text-lg">Verifying your email...</p>
+    </div>
+  );
 }

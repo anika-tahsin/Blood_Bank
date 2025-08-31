@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import useAuth from "../context/AuthContext";
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -22,11 +22,14 @@ export default function Navbar() {
         <div className="flex space-x-6 items-center">
           <Link to="/" className="hover:text-red-200 transition">Home</Link>
           <Link to="/donate" className="hover:text-red-200 transition">Donate</Link>
-
+          
           {user ? (
             <>
               <Link to="/dashboard" className="hover:text-red-200 transition">
                 Dashboard
+              </Link>
+              <Link to="/dashboard/profile" className="hover:text-red-200 transition">
+                Profile
               </Link>
               <button
                 onClick={handleLogout}

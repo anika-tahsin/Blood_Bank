@@ -1,14 +1,11 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import useAuth from "../context/AuthContext";
-
-
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
-
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -21,23 +18,25 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    
-    const { email, password } = form;
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/accounts/token/", {
-        email: form.email,
+      // ✅ Use /login/ endpoint (make sure this exists in your URLs)
+      const response = await axios.post("http://127.0.0.1:8000/api/accounts/login/", {
+        email: form.email,  // This field accepts both email and username
         password: form.password
       });
 
       const { user, access, refresh } = response.data;
-
-      // update context
-      login(user, { access, refresh });
+      
+      // ✅ Pass just the access token (match your AuthContext)
+      login(user, access);
+      
       navigate("/dashboard");
-
     } catch (err) {
-      setError("Invalid Email or Password");
+      const errorMsg = err.response?.data?.non_field_errors?.[0] || 
+                       err.response?.data?.detail || 
+                       "Invalid Email/Username or Password";
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -49,20 +48,17 @@ export default function Login() {
         <h2 className="text-2xl font-bold text-center text-red-600 mb-6">
           🔑 Login to Blood Bank
         </h2>
-
         {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
-
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
-            type="email"
+            type="text"  // ✅ Change to "text" so users can enter username or email
             name="email"
-            placeholder="Email"
+            placeholder="Email or Username"  // ✅ Update placeholder
             value={form.email}
             onChange={handleChange}
             className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500"
             required
           />
-
           <input
             type="password"
             name="password"
@@ -72,7 +68,6 @@ export default function Login() {
             className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500"
             required
           />
-
           <button
             type="submit"
             disabled={loading}
@@ -81,9 +76,8 @@ export default function Login() {
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
-
         <p className="text-center text-gray-600 mt-4">
-          Don’t have an account?{" "}
+          Don't have an account?{" "}
           <Link to="/register" className="text-red-600 font-semibold hover:underline">
             Register
           </Link>
