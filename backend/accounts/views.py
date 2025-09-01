@@ -5,11 +5,11 @@ from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import generics, status, permissions
+from rest_framework import generics, status, permissions, viewsets
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User
+from .models import User, Profile
 from .serializers import UserRegisterSerializer, UserSerializer, ProfileSerializer
 from django.shortcuts import redirect
 from accounts.models import User
@@ -21,6 +21,7 @@ from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth.models import Group
 from django.db.models import Q
 from datetime import date, timedelta
+from .utils import get_user_roles
 
 
 
