@@ -5,6 +5,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Profile,BloodRequest, DonationHistory
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
+from .models import Profile, User
+from .utils import assign_user_roles, get_user_roles
 
 User = get_user_model()
 
@@ -25,10 +28,22 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return user
 
 
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ["id", "username", "email", "is_active", "date_joined"]
+
 class UserSerializer(serializers.ModelSerializer):
+    roles = serializers.SerializerMethodField()
+    
     class Meta:
         model = User
-        fields = ["id", "username", "email", "is_active", "date_joined"]
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'roles', "date_joined"]
+        read_only_fields = ['username', 'email']
+    
+    def get_roles(self, obj):
+        """Get user's current roles"""
+        return get_user_roles(obj)
 
 
 
@@ -74,15 +89,77 @@ class CustomTokenObtainPairSerializer(serializers.Serializer):
     
 
 
+# class ProfileSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Profile
+#         fields = [
+#             'id', 'full_name', 'age', 'address', 'blood_group', 
+#             'last_donation_date', 'is_available_for_donation', 
+#             'phone_number', 'created_at', 'updated_at'
+#         ]
+#         read_only_fields = ['id', 'created_at', 'updated_at']
+
+
 class ProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    roles = serializers.ListField(
+        child=serializers.CharField(),
+        write_only=True,
+        required=True,
+        help_text="List of roles: ['donor', 'recipient']"
+    )
+    
     class Meta:
         model = Profile
         fields = [
-            'id', 'full_name', 'age', 'address', 'blood_group', 
-            'last_donation_date', 'is_available_for_donation', 
-            'phone_number', 'created_at', 'updated_at'
+            'id', 'user', 'full_name', 'age', 'address', 
+            'phone_number', 'blood_group', 'last_donation_date', 
+            'is_available_for_donation', 'created_at', 'updated_at',
+            'roles'
         ]
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        # read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def validate_roles(self, value):
+        """Validate that roles are valid"""
+        valid_roles = ['donor', 'recipient']
+        invalid_roles = [role for role in value if role not in valid_roles]
+        
+        if invalid_roles:
+            raise serializers.ValidationError(f"Invalid roles: {invalid_roles}. Valid roles are: {valid_roles}")
+        
+        if not value:  # Empty list
+            raise serializers.ValidationError("At least one role must be selected")
+        
+        return value
+    
+    def create(self, validated_data):
+        """Create profile and assign roles"""
+        roles = validated_data.pop('roles', [])
+        
+        # Create the profile
+        profile = Profile.objects.create(**validated_data)
+        
+        # Assign roles to the user
+        assign_user_roles(profile.user, roles)
+        
+        return profile
+    
+    def update(self, instance, validated_data):
+        """Update profile and roles"""
+        roles = validated_data.pop('roles', None)
+        
+        # Update profile fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        
+        # Update user roles if provided
+        if roles is not None:
+            assign_user_roles(instance.user, roles)
+        
+        return instance
+
+
 
 class UserWithProfileSerializer(serializers.ModelSerializer):
 
@@ -93,7 +170,7 @@ class UserWithProfileSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'is_active', 'date_joined', 'profile']
 
 
-####
+
 class BloodRequestSerializer(serializers.ModelSerializer):
     """Serializer for BloodRequest model"""
     # requester_name = serializers.CharField(source='requester.profile.full_name', read_only=True)

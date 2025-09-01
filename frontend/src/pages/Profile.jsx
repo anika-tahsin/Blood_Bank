@@ -18,10 +18,13 @@ export default function Profile() {
     last_donation_date: "",
     is_available_for_donation: true,
     phone_number: "",
+    roles: [],
   });
 
+
+
   const bloodGroups = ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"];
-  // api.post('/accounts/profile/', formData)
+
   // Load profile on component mount
   useEffect(() => {
     fetchProfile();
@@ -31,16 +34,29 @@ export default function Profile() {
     try {
       setLoading(true);
       const response = await api.get("accounts/profile/");
-      setProfile(response.data);
+      // setProfile(response.data);
+      const profileData = response.data;
+      // Get user roles from the profile data
+      const userRoles = profileData.user?.roles || [];
       setFormData({
-        full_name: response.data.full_name || "",
-        age: response.data.age || "",
-        address: response.data.address || "",
-        blood_group: response.data.blood_group || "",
-        last_donation_date: response.data.last_donation_date || "",
-        is_available_for_donation: response.data.is_available_for_donation ?? true,
-        phone_number: response.data.phone_number || "",
+      full_name: profileData.full_name || "",
+      age: profileData.age || "",
+      address: profileData.address || "",
+      blood_group: profileData.blood_group || "",
+      last_donation_date: profileData.last_donation_date || "",
+      is_available_for_donation: profileData.is_available_for_donation ?? true,
+      phone_number: profileData.phone_number || "",
+      roles: userRoles, // Add this line
       });
+      // setFormData({
+      //   full_name: response.data.full_name || "",
+      //   age: response.data.age || "",
+      //   address: response.data.address || "",
+      //   blood_group: response.data.blood_group || "",
+      //   last_donation_date: response.data.last_donation_date || "",
+      //   is_available_for_donation: response.data.is_available_for_donation ?? true,
+      //   phone_number: response.data.phone_number || "",
+      // });
     } catch (err) {
       if (err.response?.status === 404) {
         // Profile doesn't exist, enable editing mode
@@ -61,8 +77,38 @@ export default function Profile() {
     }));
   };
 
+  const handleRoleChange = (e) => {
+  const { value, checked } = e.target;
+    if (checked) {
+      setFormData(prev => ({
+        ...prev,
+        roles: [...prev.roles, value]
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        roles: prev.roles.filter(role => role !== value)
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    if (formData.roles.length === 0) {
+      setError("Please select at least one role (Donor or Recipient)");
+      return false;
+    }
+    setError("");
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate form before submitting
+    if (!validateForm()) {
+      return;
+    }
+
     setSaving(true);
     setError("");
     setSuccess("");
@@ -100,12 +146,14 @@ export default function Profile() {
         last_donation_date: profile.last_donation_date || "",
         is_available_for_donation: profile.is_available_for_donation ?? true,
         phone_number: profile.phone_number || "",
+        roles: profile.user?.roles || [],
       });
       setIsEditing(false);
     }
     setError("");
     setSuccess("");
   };
+
 
   if (loading) {
     return (
@@ -168,6 +216,22 @@ export default function Profile() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
                     <p className="text-lg text-gray-900">{profile.phone_number || "Not provided"}</p>
                   </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">My Roles</label>
+                    <div className="flex gap-2">
+                      {profile.user?.roles?.map(role => (
+                        <span key={role} className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                          role === 'donor' ? 'bg-blue-100 text-blue-800' : 
+                          role === 'recipient' ? 'bg-green-100 text-green-800' : 
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {role === 'donor' ? '🩸 Donor' : role === 'recipient' ? '🏥 Recipient' : role}
+                        </span>
+                      )) || <span className="text-gray-500">No roles assigned</span>}
+                    </div>
+                  </div>
+
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
                     <p className="text-lg text-gray-900">{profile.address}</p>
@@ -263,6 +327,45 @@ export default function Profile() {
                       placeholder="+8801XXXXXXXXX"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
                     />
+                  </div>
+
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      I want to be a: * (Select at least one)
+                    </label>
+                    <div className="space-y-3">
+                      <label className="flex items-start space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                        <input
+                          type="checkbox"
+                          value="donor"
+                          checked={formData.roles.includes('donor')}
+                          onChange={handleRoleChange}
+                          className="mt-1 h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                        />
+                        <div>
+                          <div className="font-medium text-gray-900">🩸 Blood Donor</div>
+                          <div className="text-sm text-gray-500">I can donate blood to help others in need</div>
+                        </div>
+                      </label>
+                      
+                      <label className="flex items-start space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                        <input
+                          type="checkbox"
+                          value="recipient"
+                          checked={formData.roles.includes('recipient')}
+                          onChange={handleRoleChange}
+                          className="mt-1 h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                        />
+                        <div>
+                          <div className="font-medium text-gray-900">🏥 Blood Recipient</div>
+                          <div className="text-sm text-gray-500">I may need to request blood for myself or others</div>
+                        </div>
+                      </label>
+                    </div>
+                    {formData.roles.length === 0 && (
+                      <p className="text-red-500 text-sm mt-2">Please select at least one role</p>
+                    )}
                   </div>
 
                   <div className="md:col-span-2">
