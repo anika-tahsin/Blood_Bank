@@ -13,7 +13,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["blood-bank-backend-upcq.onrender.com",
     "127.0.0.1",
 ]
-FRONTEND_URL = "http://blood-bank-frontend.onrender.com" 
+FRONTEND_URL = "https://blood-bank-frontend-2qog.onrender.com" 
 
 # Initialise environment variables
 env = environ.Env()
@@ -137,11 +137,11 @@ SIMPLE_JWT = {
 
 # --- CORS (frontend at Vite default port) ---
 CORS_ALLOWED_ORIGINS = [
-    "http://blood-bank-frontend.onrender.com",
+    "https://blood-bank-frontend-2qog.onrender.com",
     "http://127.0.0.1:5173",
 ]
 CSRF_TRUSTED_ORIGINS = [
-    "http://blood-bank-frontend.onrender.com",
+    "https://blood-bank-frontend-2qog.onrender.com",
     "http://127.0.0.1:5173",
 ]
 
