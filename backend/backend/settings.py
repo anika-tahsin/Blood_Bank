@@ -10,7 +10,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret-change-me")
 DEBUG = True
-ALLOWED_HOSTS = ["blood-bank-backend.onrender.com"]
+ALLOWED_HOSTS = ["blood-bank-backend-upcq.onrender.com",
+    "127.0.0.1",
+]
 FRONTEND_URL = "http://blood-bank-frontend.onrender.com" 
 
 # Initialise environment variables
