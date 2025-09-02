@@ -16,7 +16,7 @@ import VerifyRedirect from './pages/VerifyRedirect';
 
 // Import dashboard components
 import Dashboard from './pages/dashboard/Dashboard';
-// import Donors from './pages/dashboard/Donors';
+import Donors from './pages/dashboard/Donors';
 // import Patients from './pages/dashboard/Patients';
 // import Inventory from './pages/dashboard/Inventory';
 import BloodRequests from './pages/dashboard/BloodRequests';
@@ -48,7 +48,7 @@ function App() {
           }>
             <Route index element={<Dashboard />} />
             <Route path="profile" element={<Profile />} />
-            {/* <Route path="donors" element={<Donors />} /> */}
+            <Route path="donors" element={<Donors />} />
             {/* <Route path="patients" element={<Patients />} /> */}
             {/* <Route path="inventory" element={<Inventory />} /> */}
             <Route path="requests" element={<BloodRequests />} />

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 // import axios from 'axios';
+import api from '../api/axios';
 import { useAuth } from "../context/AuthContext";
 
 const CreateBloodRequestForm = ({ isOpen, onClose, onSuccess }) => {
@@ -127,7 +128,7 @@ const handleChange = (e) => {
     
     try {
       // const response = await axios.post('/api/accounts/blood-requests/', formData);
-      const response = await api.post('/api/accounts/blood-requests/', formData);
+      const response = await api.post('/accounts/blood-requests/', formData);
       
       onSuccess?.(response.data);
       onClose();

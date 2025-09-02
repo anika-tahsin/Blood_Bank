@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import api from "../api/axios.js";
+import { useAuth } from '../context/AuthContext.jsx';
+
 
 export default function Register() {
   const navigate = useNavigate();
+  const { Register } = useAuth();
+
 
   const [form, setForm] = useState({
     username: "",
@@ -25,31 +30,39 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/accounts/register/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+      // const res = await fetch("http://127.0.0.1:8000/api/accounts/register/", {
+      // const res = await api.post("/accounts/register/", {
+        // method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(form),
+      // });
+      const res = await api.post("/accounts/register/", {
+        username: form.username,
+        email: form.email,  
+        password: form.password
       });
 
-      const data = await res.json();
+      // const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(
-          data?.username?.[0] ||
-          data?.email?.[0] ||
-          data?.password?.[0] ||
-          "Registration failed"
-        );
-      }
-
-      setSuccess("✅ Registration successful! Please check your email to verify your account.");
+      setSuccess("Registration successful! Please check your email to verify your account.");
       setForm({ username: "", email: "", password: "" });
 
       // optional: redirect to login after short delay
       setTimeout(() => navigate("/login"), 3000);
 
     } catch (err) {
-      setError(err.message);
+      if (err.response && err.response.data) {
+      const data = err.response.data;
+      setError(
+        data.username?.[0] ||
+        data.email?.[0] ||
+        data.password?.[0] ||
+        "Registration failed"
+      );
+    } else {
+      setError("Something went wrong. Please try again.");
+    }
+      
     } finally {
       setLoading(false);
     }

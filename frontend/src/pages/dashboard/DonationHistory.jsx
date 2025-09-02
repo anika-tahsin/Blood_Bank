@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // import axios from 'axios';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { showSuccess, showError, showInfo} from '../../utils/toast.jsx';
 
 const DonationHistory = () => {
   const [donations, setDonations] = useState([]);
@@ -37,11 +38,13 @@ const DonationHistory = () => {
     
     try {
       setActionLoading(prev => ({ ...prev, [donationId]: true }));
-      await axios.post(`/api/accounts/donation-history/${donationId}/confirm_donation/`);
-      fetchDonations(); // Refresh the list
+      await api.post(`/accounts/donation-history/${donationId}/confirm_donation/`);
+      fetchDonations(); 
+      showSuccess('Donation confirmed successfully!');
     } catch (err) {
       const errorMessage = err.response?.data?.error || 'Failed to confirm donation';
-      alert(errorMessage);
+      // alert(errorMessage);
+      showError(errorMessage);
     } finally {
       setActionLoading(prev => ({ ...prev, [donationId]: false }));
     }
@@ -52,11 +55,13 @@ const DonationHistory = () => {
     
     try {
       setActionLoading(prev => ({ ...prev, [donationId]: true }));
-      await axios.post(`/api/accounts/donation-history/${donationId}/cancel_donation/`);
-      fetchDonations(); // Refresh the list
+      await api.post(`/accounts/donation-history/${donationId}/cancel_donation/`);
+      fetchDonations(); 
+      showSuccess("Request Canceled")// Refresh the list
     } catch (err) {
       const errorMessage = err.response?.data?.error || 'Failed to cancel donation';
-      alert(errorMessage);
+      // alert(errorMessage);
+      showError(errorMessage);
     } finally {
       setActionLoading(prev => ({ ...prev, [donationId]: false }));
     }

@@ -210,16 +210,20 @@ class BloodRequestViewSet(ModelViewSet):
         # Check if user is a donor
         if not user.groups.filter(name='Donor').exists():
             return Response(
-                {'error': 'Only donors can accept blood requests'}, 
+                {
+                    'error': 'You need to be a blood donor to accept requests',
+                    'message': 'Please update your profile and select "Blood Donor" role to accept blood requests.',
+                    'action_required': 'update_profile'
+                },
                 status=status.HTTP_403_FORBIDDEN
             )
         
         # Check if user has a profile and is available
         try:
-            profile = user.Profile
+            profile = user.profile
             if not profile.is_available_for_donation:
                 return Response(
-                    {'error': 'You are not available for donation'}, 
+                    {'error': 'You can only donate once every 56 days'}, 
                     status=status.HTTP_400_BAD_REQUEST
                 )
         except Profile.DoesNotExist:

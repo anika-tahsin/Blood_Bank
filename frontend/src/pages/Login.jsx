@@ -1,4 +1,5 @@
 import axios from "axios";
+import api from "../api/axios.js";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from '../context/AuthContext.jsx';
@@ -20,15 +21,16 @@ export default function Login() {
     setError("");
 
     try {
-      // ✅ Use /login/ endpoint (make sure this exists in your URLs)
-      const response = await axios.post("http://127.0.0.1:8000/api/accounts/login/", {
+      // Use /login/ endpoint (make sure this exists in your URLs)
+      // const response = await axios.post("http://127.0.0.1:8000/api/accounts/login/", {
+      const response = await api.post("/accounts/login/", {
         email: form.email,  // This field accepts both email and username
         password: form.password
       });
 
       const { user, access, refresh } = response.data;
       
-      // ✅ Pass just the access token (match your AuthContext)
+      // Pass just the access token (match your AuthContext)
       login(user, access);
       
       navigate("/dashboard");

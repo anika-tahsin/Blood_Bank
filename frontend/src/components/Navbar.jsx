@@ -21,7 +21,7 @@ export default function Navbar() {
         {/* Links */}
         <div className="flex space-x-6 items-center">
           <Link to="/" className="hover:text-red-200 transition">Home</Link>
-          <Link to="/donate" className="hover:text-red-200 transition">Donate</Link>
+          {/* <Link to="/donate" className="hover:text-red-200 transition">Donate</Link> */}
           
           {user ? (
             <>
