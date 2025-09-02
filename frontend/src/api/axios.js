@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://blood-bank-backend.onrender.com/api/",
+  baseURL: "https://blood-bank-backend-upcq.onrender.com/api/",
 });
 
 // Request interceptor to add token
@@ -28,7 +28,7 @@ api.interceptors.response.use(
       try {
         const refreshToken = localStorage.getItem("refresh_token"); // 
         if (refreshToken) {
-          const response = await axios.post("http://blood-bank-backend.onrender.com/api/token/refresh/", {
+          const response = await axios.post("https://blood-bank-backend-upcq.onrender.com/api/token/refresh/", {
             refresh: refreshToken,
           });
 
