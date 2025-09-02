@@ -1,13 +1,13 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/api/",
+  baseURL: "http://blood-bank-backend.onrender.com/api/",
 });
 
 // Request interceptor to add token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("access_token"); // 👈 match AuthContext
+    const token = localStorage.getItem("access_token"); // 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -26,9 +26,9 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshToken = localStorage.getItem("refresh_token"); // 👈 match AuthContext
+        const refreshToken = localStorage.getItem("refresh_token"); // 
         if (refreshToken) {
-          const response = await axios.post("http://127.0.0.1:8000/api/token/refresh/", {
+          const response = await axios.post("http://blood-bank-backend.onrender.com/api/token/refresh/", {
             refresh: refreshToken,
           });
 
