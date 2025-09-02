@@ -41,7 +41,7 @@ class RegisterView(APIView):
 
             # Build verification URL (one correct way)
 
-            FRONTEND_URL = getattr(settings, "FRONTEND_URL", "http://localhost:5173")
+            FRONTEND_URL = getattr(settings, "FRONTEND_URL")
             verification_link = f"{FRONTEND_URL}/verify/{uid}/{token}"
                         
 
