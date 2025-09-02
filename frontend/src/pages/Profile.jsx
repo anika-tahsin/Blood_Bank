@@ -48,8 +48,7 @@ export default function Profile() {
       last_donation_date: profileData.last_donation_date || "",
       is_available_for_donation: profileData.is_available_for_donation ?? true,
       phone_number: profileData.phone_number || "",
-      roles: response
-      // userRoles, 
+      roles: userRoles, 
       });
       
     } catch (err) {
