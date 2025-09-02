@@ -18,15 +18,6 @@ Prepare your submission as mentioned below. What you need to submit Please submi
 
 ● **Admin Credentials** (Username & Password)
 
-- [ ] Design ui in powerpoint
-
-- [ ] find a sitw whose lofin and registration page you like
-
-- [ ] design database in drawsql-mysql
-
-- [ ] ask chatgpt or other ai step by step project developement
-
-- [ ] find free deployment site django and react supported or check price
 
 # Project No: 4
 
@@ -66,20 +57,4 @@ Create a navigation item named 'Dashboard' visible only to authenticated users. 
 7. Deployment and Submission: (10 Marks) -
 - Deploy the functional website on a reliable hosting platform
 
-## 
 
-**
-
-lulr cqtl eidt eqlp
-
-**
-
-from django.core.mail import send_mail
-
-send_mail(
-    "Test Email",
-    "Hello, this is a test from Blood Bank project.",
-    "anikatahsintonu@gmail.com",
-    ["anikatahsintonu@gmail.com"],
-    fail_silently=False,
-)
