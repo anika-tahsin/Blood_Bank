@@ -10,8 +10,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret-change-me")
 DEBUG = True
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
-FRONTEND_URL = "http://localhost:5173" 
+ALLOWED_HOSTS = ["blood-bank-backend.onrender.com"]
+FRONTEND_URL = "http://blood-bank-frontend.onrender.com" 
 
 # Initialise environment variables
 env = environ.Env()
@@ -135,11 +135,11 @@ SIMPLE_JWT = {
 
 # --- CORS (frontend at Vite default port) ---
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
+    "http://blood-bank-frontend.onrender.com",
     "http://127.0.0.1:5173",
 ]
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
+    "http://blood-bank-frontend.onrender.com",
     "http://127.0.0.1:5173",
 ]
 
