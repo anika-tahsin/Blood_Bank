@@ -38,6 +38,8 @@ export default function Profile() {
       const profileData = response.data;
       // Get user roles from the profile data
       const userRoles = profileData.user?.roles || [];
+      setProfile(profileData);
+
       setFormData({
       full_name: profileData.full_name || "",
       age: profileData.age || "",
@@ -46,17 +48,9 @@ export default function Profile() {
       last_donation_date: profileData.last_donation_date || "",
       is_available_for_donation: profileData.is_available_for_donation ?? true,
       phone_number: profileData.phone_number || "",
-      roles: userRoles, // Add this line
+      roles: userRoles, 
       });
-      // setFormData({
-      //   full_name: response.data.full_name || "",
-      //   age: response.data.age || "",
-      //   address: response.data.address || "",
-      //   blood_group: response.data.blood_group || "",
-      //   last_donation_date: response.data.last_donation_date || "",
-      //   is_available_for_donation: response.data.is_available_for_donation ?? true,
-      //   phone_number: response.data.phone_number || "",
-      // });
+      
     } catch (err) {
       if (err.response?.status === 404) {
         // Profile doesn't exist, enable editing mode
@@ -92,22 +86,27 @@ export default function Profile() {
     }
   };
 
-  const validateForm = () => {
-    if (formData.roles.length === 0) {
-      setError("Please select at least one role (Donor or Recipient)");
-      return false;
-    }
-    setError("");
-    return true;
-  };
+  // const validateForm = () => {
+  //   if (formData.roles.length === 0) {
+  //     setError("Please select at least one role (Donor or Recipient)");
+  //     return false;
+  //   }
+  //   setError("");
+  //   return true;
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validate form before submitting
-    if (!validateForm()) {
-      return;
-    }
+    // if (!validateForm()) {
+    //   return;
+    // }
+
+    if (formData.roles.length === 0) {
+    setError("Please select at least one role (Donor or Recipient)");
+    return;
+  }
 
     setSaving(true);
     setError("");
@@ -128,7 +127,11 @@ export default function Profile() {
       setProfile(response.data);
       setIsEditing(false);
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "Failed to save profile";
+      // const errorMsg = err.response?.data?.message || "Failed to save profile";
+      console.error('Profile save error:', err.response?.data);
+      const errorMsg = err.response?.data?.message || 
+                    err.response?.data?.detail || 
+                    "Failed to save profile";
       setError(errorMsg);
     } finally {
       setSaving(false);
@@ -217,7 +220,7 @@ export default function Profile() {
                     <p className="text-lg text-gray-900">{profile.phone_number || "Not provided"}</p>
                   </div>
                   
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">My Roles</label>
                     <div className="flex gap-2">
                       {profile.user?.roles?.map(role => (
@@ -229,6 +232,29 @@ export default function Profile() {
                           {role === 'donor' ? '🩸 Donor' : role === 'recipient' ? '🏥 Recipient' : role}
                         </span>
                       )) || <span className="text-gray-500">No roles assigned</span>}
+                    </div>
+                  </div> */}
+
+                    {/* IF above not work then this */}
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">My Roles</label>
+                    <div className="flex gap-2">
+                      {profile.user?.roles?.length > 0 ? (
+                        profile.user.roles.map(role => (
+                          <span key={role} className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                            role === 'donor' ? 'bg-blue-100 text-blue-800' : 
+                            role === 'recipient' ? 'bg-green-100 text-green-800' : 
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {role === 'donor' ? '🩸 Blood Donor' : 
+                            role === 'recipient' ? '🏥 Blood Recipient' : 
+                            role}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-gray-500 italic">No roles assigned - Please edit profile to select roles</span>
+                      )}
                     </div>
                   </div>
 
@@ -264,6 +290,7 @@ export default function Profile() {
                 </div>
               </div>
             ) : (
+
               // Edit/Create Mode
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

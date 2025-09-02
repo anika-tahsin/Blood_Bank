@@ -106,6 +106,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         child=serializers.CharField(),
         write_only=True,
         required=True,
+        allow_empty=True,
         help_text="List of roles: ['donor', 'recipient']"
     )
     
@@ -121,14 +122,17 @@ class ProfileSerializer(serializers.ModelSerializer):
     
     def validate_roles(self, value):
         """Validate that roles are valid"""
+        if not value:
+            return value
+        
         valid_roles = ['donor', 'recipient']
         invalid_roles = [role for role in value if role not in valid_roles]
         
         if invalid_roles:
             raise serializers.ValidationError(f"Invalid roles: {invalid_roles}. Valid roles are: {valid_roles}")
         
-        if not value:  # Empty list
-            raise serializers.ValidationError("At least one role must be selected")
+        # if not value:  # Empty list
+        #     raise serializers.ValidationError("At least one role must be selected")
         
         return value
     
