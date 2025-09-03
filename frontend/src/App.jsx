@@ -38,7 +38,7 @@ function App() {
           </Route>
 
           {/* Email verification route with parameters */}
-          <Route path="/verify/:uid/:token" element={<VerifyRedirect />} />
+          {/* <Route path="/verify/:uid/:token" element={<VerifyRedirect />} /> */}
 
           {/* Protected dashboard routes */}
           <Route path="/dashboard" element={
