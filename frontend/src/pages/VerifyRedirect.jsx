@@ -8,7 +8,7 @@ export default function VerifyRedirect() {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        const res = await fetch(`http://127.0.0.1:8000/api/accounts/verify-email/${uid}/${token}/`);
+        const res = await fetch(`blood-bank-backend-upcq.onrender.com/accounts/verify-email/${uid}/${token}/`);
         
         // Check if response is actually JSON
         const contentType = res.headers.get('content-type');
