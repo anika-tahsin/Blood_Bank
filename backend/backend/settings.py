@@ -13,7 +13,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['blood-bank-backend-upcq.onrender.com',
     'localhost',"127.0.0.1",
 ]
-FRONTEND_URL = "https://blood-bank-frontend-2qog.onrender.com" 
+FRONTEND_URL = "https://blood-bank-frontend-2qog.onrender.com/api/accounts" 
 
 # Initialise environment variables
 env = environ.Env()
