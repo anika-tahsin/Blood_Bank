@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import api from "../api/axios";
+// import api from "../api/axios";
+import axios from "axios";
 
 export default function VerifyRedirect() {
   const { uid, token } = useParams();
@@ -10,7 +11,7 @@ export default function VerifyRedirect() {
     const verifyEmail = async () => {
       try {
         // const res = await fetch(`https://blood-bank-backend-upcq.onrender.com/api/accounts/verify-email/${uid}/${token}/`);
-        const res = await api.get(`https://blood-bank-backend-upcq.onrender.com/verify-email/${uid}/${token}/`);
+        const res = await axios.get(`https://blood-bank-backend-upcq.onrender.com/verify-email/${uid}/${token}/`);
 
         if (res.status === 200 && res.data?.success) {
           navigate("/verify-success");
