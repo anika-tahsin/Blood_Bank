@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import api from "../api/axios";
 
 export default function VerifyRedirect() {
   const { uid, token } = useParams();
@@ -8,37 +9,49 @@ export default function VerifyRedirect() {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        const res = await fetch(`https://blood-bank-backend-upcq.onrender.com/api/accounts/verify-email/${uid}/${token}/`);
-        
-        // Check if response is actually JSON
-        const contentType = res.headers.get('content-type');
-        
-        if (contentType && contentType.includes('application/json')) {
-          const data = await res.json();
-          
-          if (res.ok && data.success) {
-            navigate("/verify-success");
-          } else {
-            console.error("Verification failed:", data);
-            navigate("/verify-error");
-          }
+        // const res = await fetch(`https://blood-bank-backend-upcq.onrender.com/api/accounts/verify-email/${uid}/${token}/`);
+        const res = await api.get(`/accounts/verify-email/${uid}/${token}/`);
+
+        if (res.status === 200 && res.data?.success) {
+          navigate("/verify-success");
         } else {
-          // Response is not JSON (likely HTML error page)
-          const textResponse = await res.text();
-          console.error("Non-JSON response:", textResponse);
-          
-          if (res.ok) {
-            // Sometimes Django returns HTML success page
-            navigate("/verify-success");
-          } else {
-            navigate("/verify-error");
-          }
+          console.error("Verification failed:", res.data);
+          navigate("/verify-error");
         }
       } catch (err) {
-        console.error("Verification error:", err);
+        console.error("Verification error:", err.response?.data || err.message);
         navigate("/verify-error");
       }
     };
+        // Check if response is actually JSON
+    //     const contentType = res.headers.get('content-type');
+        
+    //     if (contentType && contentType.includes('application/json')) {
+    //       const data = await res.json();
+          
+    //       if (res.ok && data.success) {
+    //         navigate("/verify-success");
+    //       } else {
+    //         console.error("Verification failed:", data);
+    //         navigate("/verify-error");
+    //       }
+    //     } else {
+    //       // Response is not JSON (likely HTML error page)
+    //       const textResponse = await res.text();
+    //       console.error("Non-JSON response:", textResponse);
+          
+    //       if (res.ok) {
+    //         // Sometimes Django returns HTML success page
+    //         navigate("/verify-success");
+    //       } else {
+    //         navigate("/verify-error");
+    //       }
+    //     }
+    //   } catch (err) {
+    //     console.error("Verification error:", err);
+    //     navigate("/verify-error");
+    //   }
+    // };
     
     if (uid && token) {
       verifyEmail();
