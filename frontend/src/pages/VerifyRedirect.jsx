@@ -10,7 +10,7 @@ export default function VerifyRedirect() {
     const verifyEmail = async () => {
       try {
         // const res = await fetch(`https://blood-bank-backend-upcq.onrender.com/api/accounts/verify-email/${uid}/${token}/`);
-        const res = await api.get(`/accounts/verify-email/${uid}/${token}/`);
+        const res = await api.get(`/verify-email/${uid}/${token}/`);
 
         if (res.status === 200 && res.data?.success) {
           navigate("/verify-success");
