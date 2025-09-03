@@ -73,11 +73,11 @@ class VerifyEmailView(APIView):
         if user is not None and default_token_generator.check_token(user, token):
             user.is_active = True
             user.save()
-            # ✅ Return JSON response instead of redirect
+            # Return JSON response instead of redirect
             return Response({"success": True, "message": "Email verified successfully"}, 
                           status=status.HTTP_200_OK)
         else:
-            # ✅ Return JSON error instead of redirect  
+            # Return JSON error instead of redirect  
             return Response({"success": False, "message": "Invalid verification link"}, 
                           status=status.HTTP_400_BAD_REQUEST)
 

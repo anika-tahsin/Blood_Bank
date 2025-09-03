@@ -10,8 +10,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret-change-me")
 DEBUG = True
-ALLOWED_HOSTS = ["blood-bank-backend-upcq.onrender.com",
-    "127.0.0.1",
+ALLOWED_HOSTS = ['blood-bank-backend-upcq.onrender.com',
+    'localhost',"127.0.0.1",
 ]
 FRONTEND_URL = "https://blood-bank-frontend-2qog.onrender.com" 
 
@@ -138,13 +138,16 @@ SIMPLE_JWT = {
 # --- CORS (frontend at Vite default port) ---
 CORS_ALLOWED_ORIGINS = [
     "https://blood-bank-frontend-2qog.onrender.com",
-    "http://127.0.0.1:5173",
+    "http://127.0.0.1:5173","http://localhost:5173",
+    "blood-bank-backend-upcq.onrender.com"
 ]
 CSRF_TRUSTED_ORIGINS = [
     "https://blood-bank-frontend-2qog.onrender.com",
-    "http://127.0.0.1:5173",
+    "blood-bank-backend-upcq.onrender.com",
+    "http://127.0.0.1:5173","http://localhost:5173",
 ]
 
+CORS_ALLOW_CREDENTIALS = True
 
 
 # Email backend
