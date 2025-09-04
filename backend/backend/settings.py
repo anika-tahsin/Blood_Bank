@@ -138,18 +138,39 @@ SIMPLE_JWT = {
 # --- CORS (frontend at Vite default port) ---
 CORS_ALLOWED_ORIGINS = [
     "https://blood-bank-frontend-2qog.onrender.com",
-    "http://127.0.0.1:5173","http://localhost:5173",
-    "blood-bank-backend-upcq.onrender.com"
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
+    
 ]
 CSRF_TRUSTED_ORIGINS = [
     "https://blood-bank-frontend-2qog.onrender.com",
-    "blood-bank-backend-upcq.onrender.com",
-    "http://127.0.0.1:5173","http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = False
 
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
 # Email backend
 
 EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend")
