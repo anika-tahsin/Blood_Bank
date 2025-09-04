@@ -10,8 +10,11 @@ export default function VerifyRedirect() {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
+
+        console.log('Verifying with UID:', uid, 'Token:', token);
+        const res = await axios.get(`accounts/verify-email/${uid}/${token}/`);
         // const res = await fetch(`https://blood-bank-backend-upcq.onrender.com/api/accounts/verify-email/${uid}/${token}/`);
-        const res = await axios.get(`https://blood-bank-backend-upcq.onrender.com/api/accounts/verify-email/${uid}/${token}/`);
+        // const res = await axios.get(`https://blood-bank-backend-upcq.onrender.com/api/accounts/verify-email/${uid}/${token}/`);
 
         if (res.status === 200 && res.data?.success) {
           navigate("/verify-success");
