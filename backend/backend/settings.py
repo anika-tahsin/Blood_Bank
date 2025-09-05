@@ -9,11 +9,27 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret-change-me")
-DEBUG = True
-ALLOWED_HOSTS = ['blood-bank-backend-upcq.onrender.com',
-    'localhost',"127.0.0.1",
-]
-FRONTEND_URL = "https://blood-bank-frontend-2qog.onrender.com" 
+
+
+DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
+
+if DEBUG:
+    # Local development
+    FRONTEND_URL = "http://localhost:5173"
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+else:
+    # Production
+    FRONTEND_URL = "https://blood-bank-frontend-2qog.onrender.com"
+    ALLOWED_HOSTS = [
+        'blood-bank-backend-upcq.onrender.com',
+        'localhost',
+        '127.0.0.1',
+    ]
+# DEBUG = True
+# ALLOWED_HOSTS = ['blood-bank-backend-upcq.onrender.com',
+#     'localhost',"127.0.0.1",
+# ]
+# FRONTEND_URL = "https://blood-bank-frontend-2qog.onrender.com" 
 
 # Initialise environment variables
 env = environ.Env()
@@ -136,20 +152,33 @@ SIMPLE_JWT = {
 }
 
 # --- CORS (frontend at Vite default port) ---
-CORS_ALLOWED_ORIGINS = [
-    "https://blood-bank-frontend-2qog.onrender.com",
-    "http://127.0.0.1:5173",
-    "http://localhost:5173",
+
+if DEBUG:
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ]
+else:
+    CORS_ALLOWED_ORIGINS = [
+        "https://blood-bank-frontend-2qog.onrender.com",
+        "http://localhost:5173",  # Keep for local testing
+    ]
+
+
+# CORS_ALLOWED_ORIGINS = [
+#     "https://blood-bank-frontend-2qog.onrender.com",
+#     "http://127.0.0.1:5173",
+#     "http://localhost:5173",
     
-]
-CSRF_TRUSTED_ORIGINS = [
-    "https://blood-bank-frontend-2qog.onrender.com",
-    "http://127.0.0.1:5173",
-    "http://localhost:5173",
-]
+# ]
+# CSRF_TRUSTED_ORIGINS = [
+#     "https://blood-bank-frontend-2qog.onrender.com",
+#     "http://127.0.0.1:5173",
+#     "http://localhost:5173",
+# ]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_HEADERS = [
     'accept',
