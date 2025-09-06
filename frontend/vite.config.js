@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      '/api/': {
+      '/api': {
         target: 'https://blood-bank-backend-upcq.onrender.com',
         changeOrigin: true,
         secure: true,
